@@ -3,15 +3,13 @@ name: Backend Pipeline CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    
+
     - name: Checkout Code
       uses: actions/checkout@v3
 
@@ -20,20 +18,21 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Install Dependencies (FastAPI)
+    - name: Install Dependencies (Pipeline Service)
       run: |
-        cd pipeline_service
+        cd project-root/pipeline_service
         pip install -r requirements.txt
 
-    - name: Install Dependencies (Flask)
+    - name: Install Dependencies (Mock Server)
       run: |
-        cd mock_server
+        cd project-root/mock_server
         pip install -r requirements.txt
 
-    - name: Run Basic Python Check
+    - name: Python Syntax Check
       run: |
         python -m py_compile $(git ls-files '*.py')
 
-    - name: Build Docker Images
+    - name: Build Docker
       run: |
+        cd project-root
         docker compose build
